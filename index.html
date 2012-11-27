@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html>
-	<head>
-	<script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script>
- 	 	var socket = io.connect('http://192.168.0.101:8081');
-  		$(function(){
-			$('#send-button').click(function(){
-				var userName=$('.username').val();
-				var data=$('.canvas-input').val();
-				 $('<div style="padding:10px;color:#ff7300;" />').html(userName).appendTo($('.canvas'));
-	                        $('<div style="font-size:14px;"/>').html(data).appendTo($('.canvas'));
+<head>
+    <script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://192.168.26.95:8081');
+        $(function () {
+            $('#send-button').click(function () {
+                var userName = $('.username').val();
+                var data = $('.canvas-input').val();
+                socket.emit('client', {userName: userName, chat: data});
 
-				socket.emit('client',{userName:userName,chat:data});
-				console.log('send my chat');
-			});
-		});
+            });
+        });
 
-		socket.on('server', function (data) {
-			$('<div style="color:green;padding:10px;"/>').html(data['userName']).appendTo($('.canvas'));
-			$('<div style="font-size:14px;"/>').html(data['chat']).appendTo($('.canvas'));
-    	//		$('.canvas').html(data['chat']);
-		
-    		 });
-	
-	</script>	
-	</head>
-	<body>
-		<div class="canvas" style="width:500px;height:300px;overflow:auto;box-shadow:inset rgba(0,0,0,0.45) 0 0 5px;color:#222;margin:0 auto;font-size:16px;">	</div>
-		<div class="chat-window" style="width:500px;margin:0 auto;color:#333;">
-		<textarea class="canvas-input" style="width:100%;height:150px;color:#666;text-shadow:inset rgba(0,0,0,0.55) 0 0 3px;"></textarea>
-	<input type="text" placeholder="please enter your nickname" class="username" />	
-	<input type="button" id="send-button" value="send my message"/>
-		</div>
-	</body>
+        socket.on('server', function (data) {
+            $('<span style="color:#268013;font-weight:bolder;padding-right:5px;"/>').html('me').appendTo($('.canvas'));
+            $('<span style="color:#ff0a1c;font-weight:bolder;padding-right:5px;"/>').html('from' + data['ip']+'said:').appendTo($('.canvas'));
+            $('<div style="font-size:14px;padding-top:5px;"/>').html(data['chat']).appendTo($('.canvas'));
+
+        });
+        socket.on('broadcast', function (data) {
+            $('<span style="font-weight:bolder;color:#ff6b2f;padding-right:5px;" />').html(data['userName']).appendTo($('.canvas'));
+            $('<span style="font-weight:bolder;color:#40a0ff;padding-right:5px;" />').html('from' + data['ip']+'said:').appendTo($('.canvas'));
+            $('<div style="font-size:14px;padding-top:5px;"/>').html(data['chat']).appendTo($('.canvas'));
+
+        });
+
+    </script>
+</head>
+<body>
+<div class="canvas"
+     style="width:500px;height:300px;overflow:auto;box-shadow:inset rgba(0,0,0,0.45) 0 0 5px;color:#222;margin:0 auto;font-size:16px;"></div>
+<div class="chat-window" style="width:500px;margin:0 auto;color:#333;">
+    <textarea class="canvas-input"
+              style="width:100%;height:150px;color:#666;text-shadow:inset rgba(0,0,0,0.55) 0 0 3px;"></textarea>
+    <input type="text" placeholder="please enter your nickname" class="username"/>
+    <input type="button" id="send-button" value="send my message"/>
+</div>
+</body>
 </html>
