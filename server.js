@@ -1,4 +1,4 @@
-var store=require('./store');
+var store = require('./store');
 var clientName = '';
 var app = require('http').createServer(function (req, res) {
 	fs.readFile(__dirname + '/index.html', function (err, data) {
@@ -22,7 +22,7 @@ io.sockets.on('connection', function (socket) {
 			ip: clientIp.address + ':' + clientIp.port,
 			userName: data['userName'],
 			chat: data['chat']
-		});//store the chat
+		}); //store the chat
 		socket.emit('server', {
 			ip: clientIp.address + ':' + clientIp.port,
 			userName: data['userName'],

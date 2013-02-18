@@ -1,24 +1,26 @@
-exports=module.exports=function(jsonObj){
+exports = module.exports = function (jsonObj) {
 	//jsonObj:{ip:1,userName:'',chat:''}
-	console.log("2101");
-	var kitty = new Chat(jsonObj);
-	kitty.save(function (err) {
-	  if (err){
-	  	console.log(err)
-	  }
-	  console.log('meow');
+	var chat = new Chat(jsonObj);
+	chat.save(function (err) {
+		if (err) {
+			console.log(err)
+		}
+		console.log('KO');
 	});
 }
+
 var mongoose = require('mongoose');
 mongoose.connect('localhost', 'daemon');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
-  // yay!
+db.once('open', function callback() {
+	console.log("yeap");
 });
 
-var schema = mongoose.Schema({ ip: 'string',userName:'string',chat:'string' });
+var schema = mongoose.Schema({
+	ip: 'string',
+	userName: 'string',
+	chat: 'string'
+});
 var Chat = mongoose.model('Chat', schema);
-
-
