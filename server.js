@@ -1,6 +1,11 @@
 var store = require('./store');
+var connect = require("connect")
 var clientName = '';
-var app = require('http').createServer(function (req, res) {
+var app=connect()
+.use(connect.logger())
+.use(connect.static(__dirname+"/"))
+.listen(8081);
+/*var app = require('http').createServer(function (req, res) {
 	fs.readFile(__dirname + '/index.html', function (err, data) {
 		if (err) {
 			res.writeHead(500);
@@ -10,10 +15,10 @@ var app = require('http').createServer(function (req, res) {
 		res.end(data);
 		//clientName=req;
 	});
-});
+});*/
 var io = require('socket.io').listen(app);
 var fs = require('fs');
-app.listen(8081);
+
 io.sockets.on('connection', function (socket) {
 	clientName = JSON.stringify(socket[1]);
 	var clientIp = socket.handshake.address;
@@ -21,7 +26,7 @@ io.sockets.on('connection', function (socket) {
 		store({
 			ip: clientIp.address + ':' + clientIp.port,
 			userName: data['userName'],
-			chat: data['chat']
+			chat: data['chat'].toString()
 		}); //store the chat
 		socket.emit('server', {
 			ip: clientIp.address + ':' + clientIp.port,
